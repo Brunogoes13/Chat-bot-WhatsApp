@@ -1,27 +1,39 @@
 // Importações necessárias
 const qrcodeTerminal = require('qrcode-terminal');
 const qrcode = require('qrcode');
-const { Client } = require('whatsapp-web.js');
+const { Client, LocalAuth } = require('whatsapp-web.js'); // LocalAuth para salvar a sessão
 const fs = require('fs');
 
-// Criação de um novo cliente
-const client = new Client();
+// Criação de um novo cliente com salvamento de sessão
+const client = new Client({
+    authStrategy: new LocalAuth(), // Salvar a sessão para não precisar do QR Code a cada vez
+});
 
 // Função para exibir e salvar QR Code
 const handleQR = (qr) => {
+    // Exibe QR Code no terminal
     qrcodeTerminal.generate(qr, { small: true });
 
+    // Salva o QR Code como uma imagem PNG
     qrcode.toFile('./public/qr.png', qr, (err) => {
-        if (err) console.error('Falha ao gerar QR Code: ', err);
+        if (err) {
+            console.error('Falha ao gerar QR Code: ', err);
+        } else {
+            console.log('QR Code salvo com sucesso em ./public/qr.png');
+        }
     });
 };
 
-// Função para enviar mensagem com delay
+// Função para simular um atraso
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Função para enviar mensagem com atraso
 const sendMessageWithDelay = async (chat, message, delayTime = 3000) => {
-    await delay(delayTime);
-    await chat.sendStateTyping();
-    await delay(delayTime);
-    await chat.sendMessage(message);
+    await delay(delayTime); // Atraso antes de começar a digitar
+    await chat.sendStateTyping(); // Mostra que está "digitando"
+    await delay(2000); // Atraso durante a "digitação"
+    await chat.clearState(); // Limpa o estado "digitando"
+    await chat.sendMessage(message); // Envia a mensagem
 };
 
 // Evento de QR Code
@@ -32,8 +44,18 @@ client.on('ready', () => {
     console.log('Tudo certo! WhatsApp conectado.');
 });
 
+// Evento para monitorar novas mensagens
+client.on('message', async (message) => {
+    console.log(`Nova mensagem de ${message.from}: ${message.body}`);
+
+    // Responde automaticamente com uma mensagem de saudação
+    const chat = await message.getChat();
+    await sendMessageWithDelay(chat, 'Olá! Esta é uma resposta automática.', 3000);
+});
+
 // Inicializa o cliente
 client.initialize();
+
 
 // Função de delay
 const delay = ms => new Promise(res => setTimeout(res, ms));
