@@ -1,12 +1,20 @@
 // Importações necessárias
+const express = require('express'); // Para servir o frontend
+const path = require('path');
 const qrcodeTerminal = require('qrcode-terminal');
 const qrcode = require('qrcode');
-const { Client, LocalAuth } = require('whatsapp-web.js'); // LocalAuth para salvar a sessão
+const { Client, LocalAuth } = require('whatsapp-web.js');
 const fs = require('fs');
+
+// Criação do app Express
+const app = express();
+
+// Servir arquivos estáticos da pasta 'public'
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Criação de um novo cliente com salvamento de sessão
 const client = new Client({
-    authStrategy: new LocalAuth(), // Salvar a sessão para não precisar do QR Code a cada vez
+    authStrategy: new LocalAuth(),
 });
 
 // Função para exibir e salvar QR Code
@@ -14,7 +22,7 @@ const handleQR = (qr) => {
     // Exibe QR Code no terminal
     qrcodeTerminal.generate(qr, { small: true });
 
-    // Salva o QR Code como uma imagem PNG
+    // Salva o QR Code como uma imagem PNG na pasta 'public'
     qrcode.toFile('./public/qr.png', qr, (err) => {
         if (err) {
             console.error('Falha ao gerar QR Code: ', err);
@@ -29,11 +37,11 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Função para enviar mensagem com atraso
 const sendMessageWithDelay = async (chat, message, delayTime = 3000) => {
-    await delay(delayTime); // Atraso antes de começar a digitar
-    await chat.sendStateTyping(); // Mostra que está "digitando"
-    await delay(2000); // Atraso durante a "digitação"
-    await chat.clearState(); // Limpa o estado "digitando"
-    await chat.sendMessage(message); // Envia a mensagem
+    await delay(delayTime);
+    await chat.sendStateTyping();
+    await delay(2000); // Simula o tempo de digitação
+    await chat.clearState();
+    await chat.sendMessage(message);
 };
 
 // Evento de QR Code
@@ -52,6 +60,21 @@ client.on('message', async (message) => {
     const chat = await message.getChat();
     await sendMessageWithDelay(chat, 'Olá! Esta é uma resposta automática.', 3000);
 });
+
+// Inicializa o cliente
+client.initialize();
+
+// Rota padrão para o front-end
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Servidor rodando na porta 3000
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+});
+
 
 // Inicializa o cliente
 client.initialize();
