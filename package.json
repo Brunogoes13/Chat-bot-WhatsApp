@@ -1,0 +1,24 @@
+{
+  "name": "bot-whats-2",
+  "version": "1.0.0",
+  "description": "Bot Pavion",
+  "main": "chatbot.js",
+  "scripts": {
+    "start": "node chatbot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/usuario/repo.git"
+  },
+  "author": "Bruno Goes",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "puppeteer": "^23.3.0",
+    "puppeteer-core": "^23.3.0",
+    "qrcode": "^1.5.4",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.23.0",
+    "ws": "^8.18.0"
+  }
+}
