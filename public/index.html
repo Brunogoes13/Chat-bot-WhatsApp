@@ -38,24 +38,10 @@
     </div>
 
     <script>
-        // Esse script atualiza a imagem do QR Code automaticamente
+        // Esse script atualiza a imagem do QR Code automaticamente a cada 5 segundos
         setInterval(() => {
-            document.getElementById('qr-code').src = '/qr.png?' + new Date().getTime();
+            document.getElementById('qr-code').src = 'qr.png?' + new Date().getTime();
         }, 5000);
-
-        // Exemplo de como carregar o conteúdo HTML
-        const indexHtml = document.documentElement.outerHTML;
-
-        // Busca por manifest-<versão>.json no HTML
-        const match = indexHtml.match(/manifest-([\d\\.]+)\.json/);
-        const version = match ? match[1] : null;
-
-        // Exibe a versão do manifest ou informa que ele não foi encontrado
-        if (version) {
-            console.log("Versão do manifesto encontrada:", version);
-        } else {
-            console.log("Nenhum arquivo de manifesto encontrado.");
-        }
     </script>
 </body>
 </html>
