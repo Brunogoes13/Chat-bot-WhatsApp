@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conectar WhatsApp Bot</title>
+    
+    <!-- Opcional: referência ao arquivo manifest -->
+    <link rel="manifest" href="manifest-1.0.0.json">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Conecte seu WhatsApp ao Bot</h1>
+        <p>Escaneie o QR Code abaixo para conectar seu WhatsApp:</p>
+        <img src="qr.png" class="qr-code" alt="QR Code" id="qr-code">
+    </div>
+
+    <script>
+        // Esse script atualiza a imagem do QR Code automaticamente
+        setInterval(() => {
+            document.getElementById('qr-code').src = '/qr.png?' + new Date().getTime();
+        }, 5000);
+
+        // Exemplo de como carregar o conteúdo HTML
+        const indexHtml = document.documentElement.outerHTML;
+
+        // Busca por manifest-<versão>.json no HTML
+        const match = indexHtml.match(/manifest-([\d\\.]+)\.json/);
+        const version = match ? match[1] : null;
+
+        // Exibe a versão do manifest ou informa que ele não foi encontrado
+        if (version) {
+            console.log("Versão do manifesto encontrada:", version);
+        } else {
+            console.log("Nenhum arquivo de manifesto encontrado.");
+        }
+    </script>
+</body>
+</html>
