@@ -34,13 +34,15 @@
     <div class="container">
         <h1>Conecte seu WhatsApp ao Bot</h1>
         <p>Escaneie o QR Code abaixo para conectar seu WhatsApp:</p>
-        <img src="qr.png" class="qr-code" alt="QR Code" id="qr-code">
+        <img src="public/qr.png" class="qr-code" alt="QR Code" id="qr-code">
     </div>
 
     <script>
         // Esse script atualiza a imagem do QR Code automaticamente a cada 5 segundos
         setInterval(() => {
-            document.getElementById('qr-code').src = 'qr.png?' + new Date().getTime();
+            const timestamp = new Date().getTime();
+            document.getElementById('qr-code').src = 'qr.png?' + timestamp;
+            console.log('Atualizando QR Code: ' + timestamp);
         }, 5000);
     </script>
 </body>
